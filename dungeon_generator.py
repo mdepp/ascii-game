@@ -5,6 +5,7 @@ from typing import Dict, List
 
 from dataclasses import dataclass
 
+
 @dataclass
 class Room:
     xmin: int
@@ -96,8 +97,8 @@ def generate_dungeon(width: int,
     results = {}
     results[Stone] = (number_of_rooms == 0).astype(int)
     results[Wall] = ((number_of_rooms == 1) & wall_tiles).astype(int)
-    results[Air] = ((number_of_rooms > 0) & np.logical_not((number_of_rooms == 1) & wall_tiles)).astype(int)
-    results[Rubble] = (rubble_tiles & ((number_of_rooms > 0) & np.logical_not((number_of_rooms == 1) & wall_tiles))).astype(int)
+    results[Air] = ((number_of_rooms > 0) & np.logical_not(results[Wall] == 1)).astype(int)
+    results[Rubble] = (rubble_tiles & (results[Air] == 1)).astype(int)
     return results
 
 

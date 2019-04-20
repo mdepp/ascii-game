@@ -1,6 +1,6 @@
 import numpy as np
 from abc import ABC, abstractmethod
-from typing import _alias, T, Tuple, Union
+from typing import _alias, T, Tuple
 
 Np2dArray = _alias(np.ndarray, T, inst=False)
 
@@ -19,9 +19,8 @@ class GridLayer(ABC):
 
 class GridManager:
     def __init__(self):
-        layer_types = [Layer() for Layer in GridLayer.layers]
         self.width = 100
-        self.height = 10
+        self.height = 50
         from dungeon_generator import generate_dungeon
         dungeon_res = generate_dungeon(self.width, self.height, num_rooms=5, room_min=5, room_max=20)
         self.layers = {Layer(): density for Layer, density in dungeon_res.items()}
@@ -42,7 +41,7 @@ class GridManager:
         #     print()
         for y in range(self.height):
             screen.print_at(''.join(results[:, y]), 0, y)
-    
+
     def is_within_bounds(self, x: int, y: int) -> bool:
         return x >= 0 and x < self.width and y >= 0 and y < self.height
 
@@ -81,7 +80,6 @@ class Stone(GridLayer):
 
     def show(self, density: Np2dArray[int]) -> Np2dArray[str]:
         return np.where(density == 1, ' ', ' ')  # ▮
-GridLayer.layers.append(Stone)
 
 
 class Wall(GridLayer):
@@ -90,7 +88,6 @@ class Wall(GridLayer):
 
     def show(self, density: Np2dArray[int]) -> Np2dArray[str]:
         return np.full_like(density, '#', dtype=str)
-GridLayer.layers.append(Wall)
 
 
 class Air(GridLayer):
@@ -99,7 +96,6 @@ class Air(GridLayer):
 
     def show(self, density: Np2dArray[int]) -> Np2dArray[str]:
         return np.where(density == 1, '·', ' ')
-GridLayer.layers.append(Air)
 
 
 class Rubble(GridLayer):
@@ -107,6 +103,7 @@ class Rubble(GridLayer):
         super().__init__(pushable=True)
 
     def show(self, density: Np2dArray[int]) -> Np2dArray[str]:
-        return np.where(density == 1, '0', ' ')  # ◈
-GridLayer.layers.append(Rubble)
+        return np.where(density == 1, '▲', ' ')  # ◈
 
+
+GridLayer.layers += [Stone, Wall, Air, Rubble]

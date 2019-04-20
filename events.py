@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import Any, Dict, List, Type, TypeVar
 
+
 class Event(ABC):
     pass
 
@@ -27,15 +28,18 @@ class ServiceResult(Enum):
     Success = 1
     Failure = 0
 
-    
+
 class EventError(Exception):
     pass
+
 
 class DuplicateClientError(EventError):
     pass
 
+
 class NoClientRegisteredError(EventError):
     pass
+
 
 class InvalidResponseTypeError(EventError):
     pass

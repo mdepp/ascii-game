@@ -1,6 +1,4 @@
-import numpy as np
-from abc import ABC, abstractmethod
-from typing import Any, Dict, Tuple
+from typing import Any
 
 from grid import GridManager
 
@@ -53,7 +51,7 @@ class PlayerMover(Subscriber):
         x_target, y_target = self.player.x + dx, self.player.y + dy
         if not self.grid_manager.is_within_bounds(x_target, y_target):
             return
-        
+
         # Keep trying actions until one succeeds
         actions = [self.attempt_move_through, self.attempt_push]
         for action in actions:
@@ -62,7 +60,7 @@ class PlayerMover(Subscriber):
 
     def attempt_move_through(self, x_target, y_target) -> bool:
         if self.grid_manager.tile_is_any(x_target, y_target, can_move_through=False):
-           return False
+            return False
         self.player.x = x_target
         self.player.y = y_target
         return True
@@ -98,7 +96,7 @@ class InteractionHandler(Client):
         # In order to properly push an object, we need
         #  - a line of tiles where in each tile every layer is either pushable or move-throughable
         #  - at the end, a tile where every object is move-throughable
-        
+
         # HACK: don't want to deal with moving with large dx or dy, or with not moving at all
         assert abs(service.dx) in [0, 1]
         assert abs(service.dy) in [0, 1]
@@ -145,10 +143,10 @@ class InteractionHandler(Client):
 
 def main(screen):
     grid_manager = GridManager()
-    player =  Player(*grid_manager.random_move_through_tile())
+    player = Player(*grid_manager.random_move_through_tile())
     event_manager = EventManager()
-    player_mover = PlayerMover(event_manager, player, grid_manager)
-    interaction_handler = InteractionHandler(event_manager, grid_manager)
+    player_mover = PlayerMover(event_manager, player, grid_manager)  # noqa: F841
+    interaction_handler = InteractionHandler(event_manager, grid_manager)  # noqa: F841
 
     while True:
         grid_manager.print(screen)
@@ -164,7 +162,6 @@ def main(screen):
                 event_manager.publish(PlayerMoveEvent(PlayerMoveEvent.DOWN))
             elif event.key_code == Screen.KEY_RIGHT:
                 event_manager.publish(PlayerMoveEvent(PlayerMoveEvent.RIGHT))
-            
 
 
 if __name__ == '__main__':
