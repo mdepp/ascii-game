@@ -74,8 +74,9 @@ class PlayerMover(Subscriber):
             dy=y_target-self.player.y,
         ))
         if result == ServiceResult.Success:
-            self.player.x = x_target
-            self.player.y = y_target
+            if self.grid_manager.tile_is_all(x_target, y_target, can_move_through=True):
+                self.player.x = x_target
+                self.player.y = y_target
             return True
         return False
 
